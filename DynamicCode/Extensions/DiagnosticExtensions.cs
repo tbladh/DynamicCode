@@ -17,7 +17,8 @@ namespace DynamicCode.Extensions
                     Id = diagnostic.Id,
                     Message = diagnostic.GetMessage(),
                     Line = startLine.Line,
-                    Character = startLine.Character
+                    Character = startLine.Character,
+                    Severity = GetBuildMessageSeverity(diagnostic)
                 };
                 yield return message;
             }
@@ -34,6 +35,21 @@ namespace DynamicCode.Extensions
                 sb.AppendLine($"{diagnostic.Id}: {diagnostic.GetMessage()}");
             }
             return sb.ToString();
+        }
+
+        public static BuildMessageSeverity GetBuildMessageSeverity(this Diagnostic diagnostic)
+        {
+            switch (diagnostic.Severity)
+            {
+                case DiagnosticSeverity.Info:
+                    return BuildMessageSeverity.Info;
+                case DiagnosticSeverity.Warning:
+                    return BuildMessageSeverity.Warning;
+                case DiagnosticSeverity.Error:
+                    return BuildMessageSeverity.Error;
+                default:
+                    return BuildMessageSeverity.Info;
+            }
         }
 
     }
